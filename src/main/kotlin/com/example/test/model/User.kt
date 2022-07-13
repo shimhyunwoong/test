@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 
 @Entity
-class User(name: String, email: String, pw: String, phone: Int, gender: String, nickName: String): UserDetails {
+class User(name: String, email: String, pw: String, phone: Int, gender: String, nickName: String?): UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var userid: Long? = null
@@ -23,7 +23,7 @@ class User(name: String, email: String, pw: String, phone: Int, gender: String, 
     var phone: Int = phone
 
     @Column(nullable = false, length = 20)
-    var nickName: String = nickName
+    var nickName: String? = nickName
 
     @Column
     var gender: String = gender

@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 import javax.validation.Valid
 
 @RestController
-class UserController(private val userService: UserService,
-                     private val passwordEncoder: PasswordEncoder) {
+class UserController(private val userService: UserService) {
     @PostMapping("/register")
     fun register(@RequestBody @Valid registerDto: RegisterDto): String {
         return userService.register(registerDto)
