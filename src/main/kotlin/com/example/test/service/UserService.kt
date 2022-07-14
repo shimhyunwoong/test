@@ -7,7 +7,6 @@ import com.example.test.exception.UserException
 import com.example.test.model.User
 import com.example.test.repository.UserRepository
 import com.example.test.security.jwt.JwtTokenProvider
-import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -44,7 +43,7 @@ class UserService(
     }
 
     @Transactional
-    fun login(loginRequestDto: LoginRequestDto): HttpHeaders {
+    fun login(loginRequestDto: LoginRequestDto): String {
         val user: User? = userRepository.findByEmail(loginRequestDto.email)
 
         if (user == null) {
@@ -56,7 +55,8 @@ class UserService(
         }
 
         //todo 값 헤더로 보내기
-        val token: String = jwtTokenProvider.createToken(user.email, user.gender, user.nickName)
+        val token: String = jwtTokenProvider.createToken(user.email)
 
+        return token
     }
 }

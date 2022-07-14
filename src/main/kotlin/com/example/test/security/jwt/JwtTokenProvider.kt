@@ -24,11 +24,9 @@ class JwtTokenProvider(private val userDetailsService: UserDetailsService) {
         secretKey = Base64.getEncoder().encodeToString(secretKey.toByteArray())
     }
 
-    fun createToken(userPK: String, gender: String?, nickname: String): String {
+    fun createToken(userPK: String): String {
         val claims: Claims = Jwts.claims().setSubject(userPK)
         claims["userPK"] = userPK
-        claims["gender"] = gender
-        claims["nickname"] = nickname
         val now = Date()
         return Jwts.builder()
             .setHeaderParam("typ", "JWT")

@@ -32,7 +32,7 @@ class SecurityConfig(private val jwtTokenProvider: JwtTokenProvider) : WebSecuri
             .and()
             .authorizeRequests()
             .antMatchers("/api/**").authenticated()
-            .antMatchers("/register/**", "/login/**", "/logout/**").permitAll()
+            .antMatchers("/register/**", "/login/**", "/logout/**", "/api/**").permitAll()
             .and()
             .addFilterBefore(
                 JwtAuthenticationFilter(jwtTokenProvider),
