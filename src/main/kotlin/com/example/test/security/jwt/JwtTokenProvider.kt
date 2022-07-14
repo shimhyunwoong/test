@@ -3,37 +3,40 @@ package com.example.test.security.jwt
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import java.util.Base64
+import java.util.Date
+import javax.annotation.PostConstruct
+import javax.servlet.http.HttpServletRequest
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Component
-import java.util.*
-import javax.annotation.PostConstruct
-import javax.servlet.http.HttpServletRequest
 
 @Suppress("DEPRECATION")
 @Component
 class JwtTokenProvider(private val userDetailsService: UserDetailsService) {
-    private var secretKey="testKey"
+    private var secretKey = "testKey"
 
     //토큰 유효시간 30분
-    private val tokenValidTime = 30 * 60 *1000L
+    private val tokenValidTime = 30 * 60 * 1000L
 
     @PostConstruct
     protected fun init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.toByteArray())
     }
 
-    fun createToken(userPK: String): String {
+    fun createToken(userPK: String, gender: String?, nickname: String): String {
         val claims: Claims = Jwts.claims().setSubject(userPK)
         claims["userPK"] = userPK
+        claims["gender"] = gender
+        claims["nickname"] = nickname
         val now = Date()
         return Jwts.builder()
-                .setHeaderParam("typ", "JWT")
-                .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(Date(now.time+ tokenValidTime))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
-                .compact()
+            .setHeaderParam("typ", "JWT")
+            .setClaims(claims)
+            .setIssuedAt(now)
+            .setExpiration(Date(now.time + tokenValidTime))
+            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .compact()
     }
 
     //토큰에서 인증정보 조회
