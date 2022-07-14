@@ -22,6 +22,7 @@ class UserService(
     private val authenticationManager: AuthenticationManager,
     private val jwtUtils: JwtUtils
 ) {
+    //회원가입
     @Transactional
     fun register(registerDto: RegisterRequestDto): ResponseEntity<Any> {
 
@@ -46,6 +47,7 @@ class UserService(
             .body(true)
     }
 
+    //로그인
     @Transactional
     fun login(loginRequestDto: LoginRequestDto): String {
         try {
