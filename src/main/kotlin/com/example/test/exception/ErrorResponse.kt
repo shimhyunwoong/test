@@ -8,15 +8,27 @@
 
 package com.example.test.exception
 
+import com.fasterxml.jackson.annotation.JsonProperty
+import org.springframework.http.HttpStatus
 import java.time.OffsetDateTime
 
 /**
  * @author Hyunwoong Shim
  */
-class ErrorResponse(
+data class ErrorResponse(
+    @field:JsonProperty("result_code")
+    val resultCode: String,
+
+    @field:JsonProperty("http_status")
+    val httpStatus: String,
+
     val timestamp: OffsetDateTime = OffsetDateTime.now(),
-    val message: String?,
-    val path: String?,
-    val serviceName: String,
-    val errorCode: String
+    val message: String,
+    val path: String,
+    val error: MutableList<Error>?= mutableListOf()
+)
+
+data class Error(
+    val field:String,
+    val message: String
 )

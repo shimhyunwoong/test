@@ -7,6 +7,7 @@ import com.example.test.exception.UserException
 import com.example.test.model.User
 import com.example.test.repository.UserRepository
 import com.example.test.security.jwt.JwtUtils
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
@@ -29,7 +30,7 @@ class UserService(
         val findUser: User? = userRepository.findByEmail(registerDto.email)
 
         if (findUser != null) {
-            throw UserException(ErrorCode.ALREADY_REGISTERED)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 가입된 유저입니다.")
         }
 
         val user = User(
@@ -44,7 +45,7 @@ class UserService(
         userRepository.save(user)
         return ResponseEntity
             .ok()
-            .body(true)
+            .body("ok")
     }
 
     //로그인
