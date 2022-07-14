@@ -1,11 +1,15 @@
 package com.example.test.model
 
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import javax.persistence.*
 
 @Entity
-class User(name: String, email: String, pw: String, phone: Int, gender: String, nickName: String?): UserDetails {
+class User(name: String, email: String, pw: String, phone: Int, gender: String?, nickName: String) : UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var userid: Long? = null
@@ -16,17 +20,17 @@ class User(name: String, email: String, pw: String, phone: Int, gender: String, 
     @Column(nullable = false, length = 100)
     var email: String = email
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 100)
     var pw: String = pw
 
     @Column(nullable = false, length = 20)
     var phone: Int = phone
 
     @Column(nullable = false, length = 20)
-    var nickName: String? = nickName
+    var nickName: String = nickName
 
     @Column
-    var gender: String = gender
+    var gender: String? = gender
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority>? {
         return null
