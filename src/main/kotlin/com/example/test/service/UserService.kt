@@ -6,8 +6,11 @@ import com.example.test.exception.ErrorCode
 import com.example.test.exception.UserException
 import com.example.test.model.User
 import com.example.test.repository.UserRepository
-import com.example.test.security.jwt.JwtTokenProvider
+import com.example.test.security.jwt.JwtUtils
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -16,7 +19,8 @@ import org.springframework.transaction.annotation.Transactional
 class UserService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val jwtTokenProvider: JwtTokenProvider
+    private val authenticationManager: AuthenticationManager,
+    private val jwtUtils: JwtUtils
 ) {
     @Transactional
     fun register(registerDto: RegisterRequestDto): ResponseEntity<Any> {
@@ -44,18 +48,15 @@ class UserService(
 
     @Transactional
     fun login(loginRequestDto: LoginRequestDto): String {
-        val user: User? = userRepository.findByEmail(loginRequestDto.email)
-
-        if (user == null) {
-            throw UserException(ErrorCode.NOT_FOUND_USER)
+        try {
+            authenticationManager.authenticate(
+                UsernamePasswordAuthenticationToken(loginRequestDto.email, loginRequestDto.pw, null)
+            )
+        } catch (e: BadCredentialsException) {
+            throw BadCredentialsException("로그인 실패")
         }
 
-        if (!passwordEncoder.matches(loginRequestDto.pw, user.password)) {
-            throw UserException(ErrorCode.FAIL_LOGIN)
-        }
-
-        //todo 값 헤더로 보내기
-        val token: String = jwtTokenProvider.createToken(user.email)
+        val token = jwtUtils.createToken(loginRequestDto.email)
 
         return token
     }
