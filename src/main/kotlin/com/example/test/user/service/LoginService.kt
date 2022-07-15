@@ -1,19 +1,27 @@
-package com.example.test.service
+/*
+ * Copyright (c) 2022. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
 
-import com.example.test.dto.LoginRequestDto
-import com.example.test.dto.RegisterRequestDto
+package com.example.test.user.service
+
 import com.example.test.exception.ErrorCode
 import com.example.test.exception.UserException
-import com.example.test.model.User
-import com.example.test.repository.UserRepository
 import com.example.test.security.jwt.JwtTokenProvider
+import com.example.test.user.dto.LoginRequestDto
+import com.example.test.user.dto.RegisterRequestDto
+import com.example.test.user.model.User
+import com.example.test.user.repository.UserRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class UserService(
+class LoginService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
     private val jwtTokenProvider: JwtTokenProvider
@@ -24,7 +32,9 @@ class UserService(
         val findUser: User? = userRepository.findByEmail(registerDto.email)
 
         if (findUser != null) {
-            throw UserException(ErrorCode.ALREADY_REGISTERED)
+            return ResponseEntity
+                .status(ErrorCode.ALREADY_REGISTERED.httpStatus)
+                .body(ErrorCode.ALREADY_REGISTERED.message)
         }
 
         val user = User(
@@ -33,17 +43,18 @@ class UserService(
             pw = passwordEncoder.encode(registerDto.pw),
             phone = registerDto.phone,
             nickName = registerDto.nickName,
-            gender = registerDto.gender
+            gender = registerDto.gender,
+            orders = null
         )
 
         userRepository.save(user)
         return ResponseEntity
             .ok()
-            .body(true)
+            .body("Success")
     }
 
     @Transactional
-    fun login(loginRequestDto: LoginRequestDto): String {
+    fun login(loginRequestDto: LoginRequestDto): ResponseEntity<Any> {
         val user: User? = userRepository.findByEmail(loginRequestDto.email)
 
         if (user == null) {
@@ -54,9 +65,10 @@ class UserService(
             throw UserException(ErrorCode.FAIL_LOGIN)
         }
 
-        //todo 값 헤더로 보내기
         val token: String = jwtTokenProvider.createToken(user.email)
 
-        return token
+        return ResponseEntity
+            .ok()
+            .body("Beara: " + token)
     }
 }

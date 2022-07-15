@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component
 @Suppress("DEPRECATION")
 @Component
 class JwtTokenProvider(private val userDetailsService: UserDetailsService) {
-    private var secretKey = "testKey"
+    private var secretKey = "testKeyKotlindfsdcestlindfsdsdff2324="
 
     //토큰 유효시간 30분
     private val tokenValidTime = 30 * 60 * 1000L
@@ -38,8 +38,8 @@ class JwtTokenProvider(private val userDetailsService: UserDetailsService) {
     }
 
     //토큰에서 인증정보 조회
-    fun getAuthentication(token: String): UsernamePasswordAuthenticationToken {
-        val userDetails = userDetailsService.loadUserByUsername(getUserPk(token))
+    fun getAuthentication(token: String?): UsernamePasswordAuthenticationToken {
+        val userDetails = userDetailsService.loadUserByUsername(getUserPk(token!!))
         return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
     }
 
@@ -54,8 +54,9 @@ class JwtTokenProvider(private val userDetailsService: UserDetailsService) {
     }
 
     // 토큰의 유효성 + 만료일자 확인
-    fun validateToken(jwtToken: String): Boolean {
+    fun validateToken(jwtToken: String?): Boolean {
         return try {
+//            val token: String = jwtToken.replace("Bearer", "")
             val claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken)
             !claims.body.expiration.before(Date())
         } catch (e: Exception) {

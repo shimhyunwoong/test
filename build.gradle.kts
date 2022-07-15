@@ -36,10 +36,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    compileOnly("org.projectlombok:lombok")
     runtimeOnly("com.h2database:h2")
     runtimeOnly("mysql:mysql-connector-java")
-    annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
     //springSecurity
@@ -49,6 +47,8 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.11.2")
     implementation("commons-codec:commons-codec:1.15")
     implementation("com.auth0:java-jwt:3.19.1")
+    runtime("io.jsonwebtoken:jjwt-impl:0.10.7")
+    runtime("io.jsonwebtoken:jjwt-jackson:0.10.7")
 
     //Valid
     implementation("org.springframework.boot:spring-boot-starter-validation")

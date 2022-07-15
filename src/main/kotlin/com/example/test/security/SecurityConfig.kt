@@ -31,13 +31,18 @@ class SecurityConfig(private val jwtTokenProvider: JwtTokenProvider) : WebSecuri
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-            .antMatchers("/api/**").authenticated()
-            .antMatchers("/register/**", "/login/**", "/logout/**", "/api/**").permitAll()
+//            .antMatchers("/api/**").authenticated()
+            .antMatchers("/api/register", "/api/login", "/api/logout").permitAll()
             .and()
             .addFilterBefore(
                 JwtAuthenticationFilter(jwtTokenProvider),
                 UsernamePasswordAuthenticationFilter::class.java
             )
             .headers().frameOptions().disable()
+
+        //logout 수정하기
+        http.logout()
+            .logoutUrl("/api/user/logout")
+            .permitAll()
     }
 }

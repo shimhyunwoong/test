@@ -6,12 +6,15 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.example.test.dto
+package com.example.test.orders.dto
+
+import com.example.test.product.dto.ProductResponseDto
 
 /**
  * @author Hyunwoong Shim
  */
-data class LoginRequestDto(
-    val email: String,
-    val pw: String
+
+data class OrderResponseDto(
+    val username: String,
+    val response: List<ProductResponseDto>
 )
