@@ -9,6 +9,7 @@
 package com.example.test.orders.controller
 
 import com.example.test.orders.service.OrderService
+import io.swagger.annotations.ApiOperation
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
@@ -26,6 +27,8 @@ import org.springframework.web.bind.annotation.RestController
 class OrderController(
     private val orderService: OrderService
 ) {
+
+    @ApiOperation("상품주문")
     @PostMapping("/order/{productId}")
     fun addOrder(
         @AuthenticationPrincipal userDetails: UserDetails,
@@ -34,6 +37,7 @@ class OrderController(
         return orderService.addOrder(userDetails, productId)
     }
 
+    @ApiOperation("단일 회원 전체 주문 상품 조회")
     @GetMapping("/order")
     fun getOrder(@AuthenticationPrincipal userDetails: UserDetails): ResponseEntity<Any> {
         return orderService.getOrder(userDetails)

@@ -11,6 +11,7 @@ package com.example.test.user.controller
 import com.example.test.user.dto.LoginRequestDto
 import com.example.test.user.dto.RegisterRequestDto
 import com.example.test.user.service.LoginService
+import io.swagger.annotations.ApiOperation
 import javax.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController
 class LoginController(
     private val loginService: LoginService
 ) {
+    @ApiOperation("회원가입")
     @PostMapping("/register")
     fun register(
         @RequestBody @Valid registerDto: RegisterRequestDto
@@ -32,6 +34,7 @@ class LoginController(
         return loginService.register(registerDto)
     }
 
+    @ApiOperation("로그인")
     @PostMapping("/login")
     fun login(
         @RequestBody loginRequestDto: LoginRequestDto

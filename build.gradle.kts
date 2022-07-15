@@ -60,6 +60,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("com.querydsl:querydsl-apt:$querydslVersion")
     implementation("com.querydsl:querydsl-jpa:$querydslVersion")
+
+    //swagger
+    implementation("io.springfox:springfox-boot-starter:3.0.0")
 }
 
 tasks.withType<Test> {

@@ -8,9 +8,16 @@
 
 package com.example.test.user.service
 
+import com.example.test.orders.model.Orders
+import com.example.test.orders.repository.OrderRepository
+import com.example.test.product.dto.ProductResponseDto
+import com.example.test.product.model.Product
+import com.example.test.product.repository.ProductRepository
+import com.example.test.user.dto.MembersInfoResponseDto
 import com.example.test.user.dto.UserInfoResponseDto
 import com.example.test.user.model.User
 import com.example.test.user.repository.UserRepository
+import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 
@@ -19,7 +26,9 @@ import org.springframework.stereotype.Service
  */
 @Service
 class UserService(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val orderRepository: OrderRepository,
+    private val productRepository: ProductRepository
 ) {
     fun getUserInfo(userDetails: UserDetails): UserInfoResponseDto {
         val user: User? = userRepository.findByEmail(userDetails.username)
@@ -31,5 +40,37 @@ class UserService(
             gender = user.gender
         )
         return userInfoResponseDto
+    }
+
+    //ToDo Join 사용해서 쿼리 줄이기
+    fun getMemberList(userDetails: UserDetails): ResponseEntity<Any> {
+        val users: List<User> = userRepository.findAll()
+
+        val order: List<Orders> = orderRepository.findAll()
+
+        val product: List<Product> = productRepository.findAll()
+
+
+        val userinfo = UserInfoResponseDto(
+            name = user.name,
+            email = user.email,
+            nickname = user.nickName,
+            phone = user.phone,
+            gender = user.gender
+        )
+        val lastOrder = ProductResponseDto(
+            orderNum = order.get(order.size).orderNum,
+            productName = product.productName,
+            orderDate = order.get(order.size).orderDate
+        )
+
+        val membersInfo = MembersInfoResponseDto(
+            userInfo = userinfo,
+            lastOrder = lastOrder
+        )
+
+        return ResponseEntity
+            .ok()
+            .body(membersInfo)
     }
 }
