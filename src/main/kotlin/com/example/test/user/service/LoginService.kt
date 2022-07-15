@@ -15,6 +15,7 @@ import com.example.test.user.dto.LoginRequestDto
 import com.example.test.user.dto.RegisterRequestDto
 import com.example.test.user.model.User
 import com.example.test.user.repository.UserRepository
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -35,6 +36,11 @@ class LoginService(
             return ResponseEntity
                 .status(ErrorCode.ALREADY_REGISTERED.httpStatus)
                 .body(ErrorCode.ALREADY_REGISTERED.message)
+        }
+        if (registerDto.pw != registerDto.pwCheck) {
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("비밀번호가 맞지 않습니다.")
         }
 
         val user = User(
