@@ -6,9 +6,12 @@ import com.example.test.exception.ErrorCode
 import com.example.test.exception.UserException
 import com.example.test.model.User
 import com.example.test.repository.UserRepository
-import com.example.test.security.jwt.JwtTokenProvider
-import org.springframework.http.HttpHeaders
+import com.example.test.security.jwt.JwtUtils
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,15 +20,17 @@ import org.springframework.transaction.annotation.Transactional
 class UserService(
     private val userRepository: UserRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val jwtTokenProvider: JwtTokenProvider
+    private val authenticationManager: AuthenticationManager,
+    private val jwtUtils: JwtUtils
 ) {
+    //회원가입
     @Transactional
     fun register(registerDto: RegisterRequestDto): ResponseEntity<Any> {
 
         val findUser: User? = userRepository.findByEmail(registerDto.email)
 
         if (findUser != null) {
-            throw UserException(ErrorCode.ALREADY_REGISTERED)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 가입된 유저입니다.")
         }
 
         val user = User(
@@ -40,23 +45,22 @@ class UserService(
         userRepository.save(user)
         return ResponseEntity
             .ok()
-            .body(true)
+            .body("ok")
     }
 
+    //로그인
     @Transactional
-    fun login(loginRequestDto: LoginRequestDto): HttpHeaders {
-        val user: User? = userRepository.findByEmail(loginRequestDto.email)
-
-        if (user == null) {
-            throw UserException(ErrorCode.NOT_FOUND_USER)
+    fun login(loginRequestDto: LoginRequestDto): String {
+        try {
+            authenticationManager.authenticate(
+                UsernamePasswordAuthenticationToken(loginRequestDto.email, loginRequestDto.pw, null)
+            )
+        } catch (e: BadCredentialsException) {
+            throw BadCredentialsException("로그인 실패")
         }
 
-        if (!passwordEncoder.matches(loginRequestDto.pw, user.password)) {
-            throw UserException(ErrorCode.FAIL_LOGIN)
-        }
+        val token = jwtUtils.createToken(loginRequestDto.email)
 
-        //todo 값 헤더로 보내기
-        val token: String = jwtTokenProvider.createToken(user.email, user.gender, user.nickName)
-
+        return token
     }
 }

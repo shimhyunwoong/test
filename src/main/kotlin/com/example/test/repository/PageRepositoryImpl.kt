@@ -1,6 +1,12 @@
 package com.example.test.repository
 
-class PageRepositoryImpl : PageRepositoryCustom {
+import com.querydsl.jpa.impl.JPAQueryFactory
+import javax.persistence.EntityManager
+
+open class PageRepositoryImpl(
+    private val queryFactory: JPAQueryFactory,
+    private val entityManager: EntityManager
+) : PageRepositoryCustom {
 //    List<Member> result = queryFactory
 //        .selectFrom(member)
 //        .orderBy(member.username.desc())
