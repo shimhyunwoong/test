@@ -15,6 +15,6 @@ data class UserInfoResponseDto(
     val name: String,
     val email: String,
     val nickname: String,
-    val phone: Int,
+    val phone: Long,
     val gender: String?
 )

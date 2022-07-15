@@ -34,7 +34,7 @@ class User(
     val pw: String,
 
     @Column(nullable = false, length = 20)
-    val phone: Int,
+    val phone: Long,
 
     @Column(nullable = false, length = 20)
     val nickName: String,
