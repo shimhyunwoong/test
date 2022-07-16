@@ -62,6 +62,9 @@ class OrderService(
         )
 
         orderRepository.save(orders)
+//=========================================
+        user.product = product
+        userRepository.save(user)
 
         return ResponseEntity
             .ok()
