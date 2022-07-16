@@ -39,7 +39,7 @@ class SecurityConfig(private val jwtTokenProvider: JwtTokenProvider) : WebSecuri
                 UsernamePasswordAuthenticationFilter::class.java
             )
             .headers().frameOptions().disable()
-가            .and()
+            .and()
             .logout()
             .logoutUrl("/api/logout")
             .logoutSuccessUrl("/")
