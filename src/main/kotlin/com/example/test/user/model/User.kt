@@ -36,7 +36,7 @@ class User(
     @Column(nullable = false, length = 20)
     val phone: Long,
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 30)
     val nickName: String,
 
     @Column

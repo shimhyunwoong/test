@@ -23,6 +23,6 @@ class Product(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val productId: Long = 0,
 
-    @Column
+    @Column(length = 100)
     val productName: String
 )
