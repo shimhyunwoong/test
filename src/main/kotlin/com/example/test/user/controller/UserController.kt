@@ -9,6 +9,7 @@
 package com.example.test.user.controller
 
 import com.example.test.user.dto.UserInfoResponseDto
+import com.example.test.user.model.User
 import com.example.test.user.service.UserService
 import io.swagger.annotations.ApiOperation
 import org.springframework.http.ResponseEntity
@@ -39,4 +40,8 @@ class UserController(
     }
 
 
+//    @GetMapping("/test")
+//    fun getTest(@AuthenticationPrincipal userDetails: UserDetails): List<User> {
+//        return userService.getTest()
+//    }
 }
