@@ -14,7 +14,7 @@ import java.time.ZonedDateTime
  * @author Hyunwoong Shim
  */
 data class ProductResponseDto(
-    val orderNum: String,
+    val orderNum: String?,
     val productName: String?,
-    val orderDate: ZonedDateTime
+    val orderDate: ZonedDateTime?
 )
