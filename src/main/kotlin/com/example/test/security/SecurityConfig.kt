@@ -39,10 +39,11 @@ class SecurityConfig(private val jwtTokenProvider: JwtTokenProvider) : WebSecuri
                 UsernamePasswordAuthenticationFilter::class.java
             )
             .headers().frameOptions().disable()
-
-        //logout 수정하기
-        http.logout()
-            .logoutUrl("/api/user/logout")
-            .permitAll()
+가            .and()
+            .logout()
+            .logoutUrl("/api/logout")
+            .logoutSuccessUrl("/")
+            .invalidateHttpSession(true)
+            .deleteCookies("JSESSIONID")
     }
 }
