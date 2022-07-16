@@ -50,7 +50,8 @@ class LoginService(
             phone = registerDto.phone,
             nickName = registerDto.nickName,
             gender = registerDto.gender,
-            orders = null
+            orders = null,
+            product = null
         )
 
         userRepository.save(user)
