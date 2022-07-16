@@ -9,7 +9,9 @@
 package com.example.test.user.dto
 
 import javax.validation.constraints.Email
+import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
+import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
 
 data class RegisterRequestDto(
@@ -23,19 +25,15 @@ data class RegisterRequestDto(
 
     @field:NotBlank
     @field:Pattern(
-        regexp = """^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@${'$'}!%*?&])[A-Za-z\d@${'$'}!%*?&]{10,}${'$'}""",
-        message = "영문 대문자, 영문 소문자, 특수 문자, 숫자 각 1개 이상씩 포함 최소 10자 이상 입력해야합니다."
+        regexp = """^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@${'$'}!%*?&])[A-Za-z\d@${'$'}!%*?&]{10,20}${'$'}""",
+        message = "영문 대문자, 영문 소문자, 특수 문자, 숫자 각 1개 이상씩 포함 최소 10자 이상 20자 이하로 입력해야합니다."
     )
     val pw: String,
 
     @field:NotBlank
     val pwCheck: String,
 
-//    @field:NotBlank
-//    @field:Pattern(
-//        regexp = """^01(?:0|1|[6-9])(?:\\d{3}|\\d{4})\\d{4}$""",
-//        message = "영문 대문자, 소문자, 특수 문자, 숫자 각 1개 이상씩 포함해야 합니다."
-//    )
+    @field:NotNull
     val phone: Long,
 
     @field:NotBlank
