@@ -9,12 +9,16 @@
 package com.example.test.user.model
 
 import com.example.test.orders.model.Orders
+import com.example.test.product.model.Product
+import com.fasterxml.jackson.annotation.JsonIdentityInfo
+import com.fasterxml.jackson.annotation.JsonIgnore
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.OneToMany
+import javax.persistence.OneToOne
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
@@ -43,7 +47,10 @@ class User(
     val gender: String?,
 
     @OneToMany(mappedBy = "user")
-    val orders: List<Orders>?
+    val orders: List<Orders>?,
+
+    @OneToOne
+    var product: Product?
 ) :
     UserDetails {
 
