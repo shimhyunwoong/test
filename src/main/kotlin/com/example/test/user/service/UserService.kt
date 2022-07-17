@@ -12,9 +12,14 @@ import com.example.test.orders.repository.OrderRepository
 import com.example.test.product.dto.ProductResponseDto
 import com.example.test.product.repository.ProductRepository
 import com.example.test.user.dto.MembersInfoResponseDto
+import com.example.test.user.dto.PageRequestDto
 import com.example.test.user.dto.UserInfoResponseDto
 import com.example.test.user.model.User
 import com.example.test.user.repository.UserRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
@@ -48,6 +53,7 @@ class UserService(
 
         val response: ArrayList<MembersInfoResponseDto> = ArrayList()
 
+        //TODO 리팩토링 하기
         for (find in users) {
             val userinfo = UserInfoResponseDto(
                 name = find.name,
@@ -72,9 +78,9 @@ class UserService(
 
             } else {
                 val lastOrder = ProductResponseDto(
-                    orderNum = find.orders?.get(find.orders!!.size -1)!!.orderNum,
+                    orderNum = find.orders?.get(find.orders!!.size - 1)!!.orderNum,
                     productName = find.product?.productName,
-                    orderDate = find.orders?.get(find.orders!!.size -1)!!.createdAt
+                    orderDate = find.orders?.get(find.orders!!.size - 1)!!.createdAt
                 )
 
                 val memberInfo = MembersInfoResponseDto(
@@ -89,5 +95,59 @@ class UserService(
         return ResponseEntity
             .ok()
             .body(response)
+    }
+
+    fun getPage(userDetails: UserDetails, page: PageRequestDto): Page<User> {
+        val direction: Sort.Direction =
+            when {
+                page.isAsc -> Sort.Direction.ASC
+                else -> Sort.Direction.DESC
+            }
+        val sort: Sort = Sort.by(direction, page.sortBy)
+        val pageable: Pageable = PageRequest.of(page.page -1, page.size, sort)
+//        val pageUser: Page<User> = userRepository.findAll(pageable)
+
+
+//        val response: ArrayList<MembersInfoResponseDto> = ArrayList()
+
+//        //TODO 리팩토링 하기
+//        for (find in pageUser) {
+//            val userinfo = UserInfoResponseDto(
+//                name = find.name,
+//                email = find.email,
+//                nickname = find.email,
+//                phone = find.phone,
+//                gender = find.gender
+//            )
+//
+//            if (find.orders?.size!! == 0) {
+//                val lastOrder = ProductResponseDto(
+//                    orderNum = null,
+//                    productName = null,
+//                    orderDate = null
+//                )
+//
+//                val memberInfo = MembersInfoResponseDto(
+//                    userInfo = userinfo,
+//                    lastOrder = lastOrder
+//                )
+//                response.add(memberInfo)
+//
+//            } else {
+//                val lastOrder = ProductResponseDto(
+//                    orderNum = find.orders?.get(find.orders!!.size - 1)!!.orderNum,
+//                    productName = find.product?.productName,
+//                    orderDate = find.orders?.get(find.orders!!.size - 1)!!.createdAt
+//                )
+//
+//                val memberInfo = MembersInfoResponseDto(
+//                    userInfo = userinfo,
+//                    lastOrder = lastOrder
+//                )
+//                response.add(memberInfo)
+//            }
+//        }
+
+        return userRepository.findAll(pageable)
     }
 }
