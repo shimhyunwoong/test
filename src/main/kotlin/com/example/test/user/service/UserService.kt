@@ -74,7 +74,7 @@ class UserService(
                 val lastOrder = ProductResponseDto(
                     orderNum = find.orders?.get(find.orders!!.size -1)!!.orderNum,
                     productName = find.product?.productName,
-                    orderDate = find.orders?.get(find.orders!!.size -1)!!.orderDate
+                    orderDate = find.orders?.get(find.orders!!.size -1)!!.createdAt
                 )
 
                 val memberInfo = MembersInfoResponseDto(
