@@ -56,7 +56,6 @@ class OrderService(
         val orderUUID = UUID.randomUUID().toString().replace("-", "")
         val orders = Orders(
             orderNum = orderUUID.substring(0, 12).toUpperCase(),
-            orderDate = nowSeoul,
             product = product,
             user = user!!
         )
@@ -93,7 +92,7 @@ class OrderService(
                     .body("상품이 존재하지 않습니다.")
             val productResponseDto = ProductResponseDto(
                 orderNum = order.orderNum,
-                orderDate = order.orderDate,
+                orderDate = order.createdAt,
                 productName = product.productName
             )
             response.add(productResponseDto)
