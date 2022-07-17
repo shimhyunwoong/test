@@ -50,14 +50,11 @@ class OrderService(
                 .status(HttpStatus.NOT_FOUND)
                 .body("없는 상품입니다.")
 
-        var nowSeoul: ZonedDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"))
-
-
-        val orderUUID = UUID.randomUUID().toString().replace("-", "")
+        val orderNum = getRandomNum(12)
         val orders = Orders(
-            orderNum = orderUUID.substring(0, 12).toUpperCase(),
+            orderNum = orderNum,
             product = product,
-            user = user!!
+            user = user
         )
 
         orderRepository.save(orders)
@@ -107,5 +104,13 @@ class OrderService(
         return ResponseEntity
             .ok()
             .body(ordersResponseDto)
+    }
+
+    //OrderNum 랜덤한 영문 대문자, 숫자 조합
+    fun getRandomNum(length: Int): String {
+        val charset = ('A'..'Z') + ('0'..'9')
+        return (1..length)
+            .map { charset.random() }
+            .joinToString ("")
     }
 }
