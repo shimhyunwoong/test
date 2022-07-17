@@ -10,8 +10,6 @@ package com.example.test.user.model
 
 import com.example.test.orders.model.Orders
 import com.example.test.product.model.Product
-import com.fasterxml.jackson.annotation.JsonIdentityInfo
-import com.fasterxml.jackson.annotation.JsonIgnore
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -49,6 +47,8 @@ class User(
     @OneToMany(mappedBy = "user")
     val orders: List<Orders>?,
 
+    //ToDo 연관관계 다시 맺기
+    //list.add 한 후 size 의 마지막을 가져오기
     @OneToOne
     var product: Product?
 ) :
