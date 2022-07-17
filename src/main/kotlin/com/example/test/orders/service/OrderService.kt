@@ -55,14 +55,14 @@ class OrderService(
 
         val orderUUID = UUID.randomUUID().toString().replace("-", "")
         val orders = Orders(
-            orderNum = orderUUID.substring(0, 12),
+            orderNum = orderUUID.substring(0, 12).toUpperCase(),
             orderDate = nowSeoul,
             product = product,
             user = user!!
         )
 
         orderRepository.save(orders)
-//=========================================
+
         user.product = product
         userRepository.save(user)
 
