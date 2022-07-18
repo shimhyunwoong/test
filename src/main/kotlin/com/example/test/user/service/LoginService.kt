@@ -8,8 +8,6 @@
 
 package com.example.test.user.service
 
-import com.example.test.exception.ErrorCode
-import com.example.test.exception.UserException
 import com.example.test.security.jwt.JwtTokenProvider
 import com.example.test.user.dto.LoginRequestDto
 import com.example.test.user.dto.RegisterRequestDto
@@ -34,9 +32,10 @@ class LoginService(
 
         if (findUser != null) {
             return ResponseEntity
-                .status(ErrorCode.ALREADY_REGISTERED.httpStatus)
-                .body(ErrorCode.ALREADY_REGISTERED.message)
+                .status(HttpStatus.BAD_REQUEST)
+                .body("이미 가입된 아이디 입니다.")
         }
+
         if (registerDto.pw != registerDto.pwCheck) {
             return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -65,11 +64,15 @@ class LoginService(
         val user: User? = userRepository.findByEmail(loginRequestDto.email)
 
         if (user == null) {
-            throw UserException(ErrorCode.NOT_FOUND_USER)
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body("가입되지 않은 유저입니다.")
         }
 
         if (!passwordEncoder.matches(loginRequestDto.pw, user.password)) {
-            throw UserException(ErrorCode.FAIL_LOGIN)
+            return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("비밀번호가 일치하지 않습니다.")
         }
 
         val token: String = jwtTokenProvider.createToken(user.email)

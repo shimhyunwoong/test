@@ -84,8 +84,6 @@ class OrderService(
         val response = ArrayList<ProductResponseDto>()
 
         for (order in orders) {
-            //TODO 쿼리 더 적게 나가게 만들기
-            //product 와 연관관계 다시 맺고, list 만들어서 add 하면 쿼리 더 적게 나갈 듯
             val product: Product = productRepository.findByProductId(order.product.productId)
                 ?: return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)

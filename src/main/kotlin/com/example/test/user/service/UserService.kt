@@ -61,7 +61,6 @@ class UserService(
 
         val response: ArrayList<MembersInfoResponseDto> = ArrayList()
 
-        //TODO 리팩토링 하기
         for (find in users) {
             val userinfo = UserInfoResponseDto(
                 name = find.name,
