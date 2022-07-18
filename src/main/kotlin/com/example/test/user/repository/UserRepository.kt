@@ -8,10 +8,11 @@
 
 package com.example.test.user.repository
 
-import com.example.test.user.model.User
+import com.example.test.user.dto.model.User
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface UserRepository : JpaRepository<User, Long> {
-    fun findByEmail(email: String?): User?
+    fun findByEmail(email: String): User?
+    fun findByName(name: String): User?
 
 }
