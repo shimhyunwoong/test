@@ -48,7 +48,6 @@ class User(
     val orders: List<Orders>?,
 
     //ToDo 연관관계 다시 맺기
-    //list.add 한 후 size 의 마지막을 가져오기
     @OneToOne
     var product: Product?
 ) :
