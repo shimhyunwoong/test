@@ -12,7 +12,7 @@ import com.example.test.product.dto.ProductResponseDto
 import com.example.test.user.dto.MembersInfoResponseDto
 import com.example.test.user.dto.PageRequestDto
 import com.example.test.user.dto.UserInfoResponseDto
-import com.example.test.user.dto.model.User
+import com.example.test.user.model.User
 import com.example.test.user.repository.UserRepository
 import com.example.test.util.Validation
 import org.springframework.data.domain.Page

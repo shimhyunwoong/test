@@ -14,7 +14,7 @@ import com.example.test.orders.repository.OrderRepository
 import com.example.test.product.dto.ProductResponseDto
 import com.example.test.product.model.Product
 import com.example.test.product.repository.ProductRepository
-import com.example.test.user.dto.model.User
+import com.example.test.user.model.User
 import com.example.test.user.repository.UserRepository
 import com.example.test.util.Validation
 import org.springframework.data.repository.findByIdOrNull
