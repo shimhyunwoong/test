@@ -8,7 +8,7 @@
 
 package com.example.test.util
 
-import com.example.test.user.dto.model.User
+import com.example.test.user.model.User
 import com.example.test.user.repository.UserRepository
 import org.springframework.stereotype.Component
 

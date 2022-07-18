@@ -6,7 +6,3 @@ data class PageRequestDto(
     val sortBy: String, //정렬 기준
     val isAsc: Boolean //오름차순, 내림차순
 )
-
-data class PageResponseDto(
-    val memberInfo: List<MembersInfoResponseDto>
-)
