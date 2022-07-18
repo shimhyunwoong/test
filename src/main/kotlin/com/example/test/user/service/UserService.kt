@@ -46,7 +46,6 @@ class UserService(
         return userInfoResponseDto
     }
 
-    //ToDo Join 사용해서 쿼리 줄이기
     @Transactional
     fun getMemberList(userDetails: UserDetails): ResponseEntity<Any> {
         val users: List<User> = userRepository.findAll()
@@ -91,12 +90,12 @@ class UserService(
             }
 
         }
-
         return ResponseEntity
             .ok()
             .body(response)
     }
 
+    //페이징
     fun getPage(userDetails: UserDetails, page: PageRequestDto): Page<User> {
         val direction: Sort.Direction =
             when {
@@ -104,13 +103,13 @@ class UserService(
                 else -> Sort.Direction.DESC
             }
         val sort: Sort = Sort.by(direction, page.sortBy)
-        val pageable: Pageable = PageRequest.of(page.page -1, page.size, sort)
-//        val pageUser: Page<User> = userRepository.findAll(pageable)
+        val pageable: Pageable = PageRequest.of(page.page - 1, page.size, sort)
+
+        val pageUser: Page<User> = userRepository.findAll(pageable)
 
 
 //        val response: ArrayList<MembersInfoResponseDto> = ArrayList()
 
-//        //TODO 리팩토링 하기
 //        for (find in pageUser) {
 //            val userinfo = UserInfoResponseDto(
 //                name = find.name,
