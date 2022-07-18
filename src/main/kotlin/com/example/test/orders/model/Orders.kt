@@ -9,7 +9,7 @@
 package com.example.test.orders.model
 
 import com.example.test.product.model.Product
-import com.example.test.user.dto.model.User
+import com.example.test.user.model.User
 import com.example.test.util.Timestamped
 import javax.persistence.Column
 import javax.persistence.Entity

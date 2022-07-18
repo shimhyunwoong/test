@@ -6,7 +6,7 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.example.test.user.dto.model
+package com.example.test.user.model
 
 import com.example.test.orders.model.Orders
 import com.example.test.product.model.Product
