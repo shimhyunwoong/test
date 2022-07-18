@@ -8,16 +8,15 @@
 
 package com.example.test.user.controller
 
+import com.example.test.user.dto.MembersInfoResponseDto
 import com.example.test.user.dto.PageRequestDto
-import com.example.test.user.dto.UserInfoResponseDto
-import com.example.test.user.model.User
 import com.example.test.user.service.UserService
 import io.swagger.annotations.ApiOperation
-import org.springframework.data.domain.Page
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -30,10 +29,13 @@ import org.springframework.web.bind.annotation.RestController
 class UserController(
     private val userService: UserService
 ) {
-    @ApiOperation("단일 유저 정보 조회")
-    @GetMapping("/userInfo")
-    fun getUserInfo(@AuthenticationPrincipal userDetails: UserDetails): UserInfoResponseDto {
-        return userService.getUserInfo(userDetails)
+    @ApiOperation("단일 유저 정보 조회, email or name")
+    @GetMapping("/user-info/{userInfo}")
+    fun getUserInfo(
+        @AuthenticationPrincipal userDetails: UserDetails,
+        @PathVariable(value = "userInfo") userInfo: String
+    ): ResponseEntity<Any> {
+        return userService.getUserInfo(userDetails, userInfo)
     }
 
     @ApiOperation("전체 유저 조회")
@@ -42,17 +44,12 @@ class UserController(
         return userService.getMemberList(userDetails)
     }
 
-    @GetMapping("/page-test")
+    @ApiOperation("회원 목록 조회")
+    @GetMapping("/user/list")
     fun getPage(
         @AuthenticationPrincipal userDetails: UserDetails,
         @RequestBody getPage: PageRequestDto
-    ): Page<User> {
+    ): ArrayList<MembersInfoResponseDto> {
         return userService.getPage(userDetails, getPage)
     }
-
-
-//    @GetMapping("/test")
-//    fun getTest(@AuthenticationPrincipal userDetails: UserDetails): List<User> {
-//        return userService.getTest()
-//    }
 }

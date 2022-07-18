@@ -10,7 +10,6 @@ package com.example.test.product.service
 
 import com.example.test.product.model.Product
 import com.example.test.product.repository.ProductRepository
-import javax.annotation.PostConstruct
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -22,23 +21,6 @@ import org.springframework.transaction.annotation.Transactional
 class ProductService(
     private val productRepository: ProductRepository
 ) {
-
-    @PostConstruct
-    fun addProduct() {
-        val product: Product = Product(
-            productName = "상품1"
-        )
-        val product2: Product = Product(
-            productName = "상품2"
-        )
-        val product3: Product = Product(
-            productName = "상품3"
-        )
-        productRepository.save(product)
-        productRepository.save(product2)
-        productRepository.save(product3)
-    }
-
     @Transactional
     fun createProduct(userDetails: UserDetails, productName: String): Product {
         val product = Product(

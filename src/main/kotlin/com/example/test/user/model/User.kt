@@ -10,6 +10,7 @@ package com.example.test.user.model
 
 import com.example.test.orders.model.Orders
 import com.example.test.product.model.Product
+import com.example.test.util.Timestamped
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -24,12 +25,12 @@ import org.springframework.security.core.userdetails.UserDetails
 class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val userid: Long = 0,
+    val userId: Long = 0,
 
     @Column(nullable = false, length = 20)
     val name: String,
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 100, unique = true)
     val email: String,
 
     @Column(nullable = false, length = 100)
@@ -51,7 +52,7 @@ class User(
     @OneToOne
     var product: Product?
 ) :
-    UserDetails {
+    UserDetails, Timestamped() {
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority>? {
         return null

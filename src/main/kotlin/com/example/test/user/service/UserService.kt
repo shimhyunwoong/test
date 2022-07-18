@@ -8,18 +8,18 @@
 
 package com.example.test.user.service
 
-import com.example.test.orders.repository.OrderRepository
 import com.example.test.product.dto.ProductResponseDto
-import com.example.test.product.repository.ProductRepository
 import com.example.test.user.dto.MembersInfoResponseDto
 import com.example.test.user.dto.PageRequestDto
 import com.example.test.user.dto.UserInfoResponseDto
 import com.example.test.user.model.User
 import com.example.test.user.repository.UserRepository
+import com.example.test.util.Validation
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
@@ -31,19 +31,28 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class UserService(
     private val userRepository: UserRepository,
-    private val orderRepository: OrderRepository,
-    private val productRepository: ProductRepository
+    private val validation: Validation
 ) {
-    fun getUserInfo(userDetails: UserDetails): UserInfoResponseDto {
-        val user: User? = userRepository.findByEmail(userDetails.username)
+    fun getUserInfo(userDetails: UserDetails, userInfo: String): ResponseEntity<Any> {
+
+        val findUser: User? = validation.variableCheck(userInfo)
+
+        if (findUser == null) {
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body("해당 유저를 찾을 수 없습니다.")
+        }
+
         val userInfoResponseDto = UserInfoResponseDto(
-            name = user!!.name,
-            email = user.email,
-            nickname = user.nickName,
-            phone = user.phone,
-            gender = user.gender
+            name = findUser.name,
+            email = findUser.email,
+            nickname = findUser.nickName,
+            phone = findUser.phone,
+            gender = findUser.gender
         )
-        return userInfoResponseDto
+        return ResponseEntity
+            .ok()
+            .body(userInfoResponseDto)
     }
 
     @Transactional
@@ -96,7 +105,8 @@ class UserService(
     }
 
     //페이징
-    fun getPage(userDetails: UserDetails, page: PageRequestDto): Page<User> {
+    @Transactional
+    fun getPage(userDetails: UserDetails, page: PageRequestDto): ArrayList<MembersInfoResponseDto> {
         val direction: Sort.Direction =
             when {
                 page.isAsc -> Sort.Direction.ASC
@@ -105,48 +115,47 @@ class UserService(
         val sort: Sort = Sort.by(direction, page.sortBy)
         val pageable: Pageable = PageRequest.of(page.page - 1, page.size, sort)
 
-        val pageUser: Page<User> = userRepository.findAll(pageable)
+        var pageUser: Page<User> = userRepository.findAll(pageable)
 
+        println(pageUser.size)
+        println(page.size)
 
-//        val response: ArrayList<MembersInfoResponseDto> = ArrayList()
+        if (page.size > pageUser.size) {
+            val pageable: Pageable = PageRequest.of(page.page - 1, pageUser.size, sort)
+            pageUser = userRepository.findAll(pageable)
+        }
 
-//        for (find in pageUser) {
-//            val userinfo = UserInfoResponseDto(
-//                name = find.name,
-//                email = find.email,
-//                nickname = find.email,
-//                phone = find.phone,
-//                gender = find.gender
-//            )
-//
-//            if (find.orders?.size!! == 0) {
-//                val lastOrder = ProductResponseDto(
-//                    orderNum = null,
-//                    productName = null,
-//                    orderDate = null
-//                )
-//
-//                val memberInfo = MembersInfoResponseDto(
-//                    userInfo = userinfo,
-//                    lastOrder = lastOrder
-//                )
-//                response.add(memberInfo)
-//
-//            } else {
-//                val lastOrder = ProductResponseDto(
-//                    orderNum = find.orders?.get(find.orders!!.size - 1)!!.orderNum,
-//                    productName = find.product?.productName,
-//                    orderDate = find.orders?.get(find.orders!!.size - 1)!!.createdAt
-//                )
-//
-//                val memberInfo = MembersInfoResponseDto(
-//                    userInfo = userinfo,
-//                    lastOrder = lastOrder
-//                )
-//                response.add(memberInfo)
-//            }
-//        }
+        val result: ArrayList<MembersInfoResponseDto> = ArrayList()
 
-        return userRepository.findAll(pageable)
+        for (find in pageUser) {
+            val userInfo = UserInfoResponseDto(
+                name = find.name,
+                email = find.email,
+                nickname = find.nickName,
+                phone = find.phone,
+                gender = find.gender
+            )
+            var product: ProductResponseDto
+
+            if (find.orders?.size == 0) {
+                product = ProductResponseDto(
+                    orderNum = null,
+                    productName = null,
+                    orderDate = null
+                )
+            } else {
+                product = ProductResponseDto(
+                    orderNum = find.product?.productName,
+                    productName = find.product?.productName,
+                    orderDate = find.orders?.get(find.orders?.size!!)?.createdAt
+                )
+            }
+            val membersInfo = MembersInfoResponseDto(
+                userInfo = userInfo,
+                lastOrder = product
+            )
+            result.add(membersInfo)
+        }
+        return result
     }
 }

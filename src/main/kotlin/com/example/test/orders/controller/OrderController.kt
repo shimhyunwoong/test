@@ -38,8 +38,11 @@ class OrderController(
     }
 
     @ApiOperation("단일 회원 전체 주문 상품 조회")
-    @GetMapping("/order")
-    fun getOrder(@AuthenticationPrincipal userDetails: UserDetails): ResponseEntity<Any> {
-        return orderService.getOrder(userDetails)
+    @GetMapping("/order/{userInfo}")
+    fun getOrder(
+        @AuthenticationPrincipal userDetails: UserDetails,
+        @PathVariable(value = "userInfo") userInfo: String
+    ): ResponseEntity<Any> {
+        return orderService.getOrder(userDetails, userInfo)
     }
 }

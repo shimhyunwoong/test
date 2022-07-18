@@ -11,7 +11,6 @@ package com.example.test.orders.model
 import com.example.test.product.model.Product
 import com.example.test.user.model.User
 import com.example.test.util.Timestamped
-import java.time.ZonedDateTime
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.FetchType
@@ -36,6 +35,6 @@ class Orders(
     val product: Product,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    val user: User,
+    val user: User
 
-    ) : Timestamped()
+) : Timestamped()
