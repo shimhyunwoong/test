@@ -14,11 +14,9 @@ import com.example.test.orders.repository.OrderRepository
 import com.example.test.product.dto.ProductResponseDto
 import com.example.test.product.model.Product
 import com.example.test.product.repository.ProductRepository
-import com.example.test.user.model.User
+import com.example.test.user.dto.model.User
 import com.example.test.user.repository.UserRepository
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.util.UUID
+import com.example.test.util.Validation
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -33,7 +31,8 @@ import org.springframework.transaction.annotation.Transactional
 class OrderService(
     private val orderRepository: OrderRepository,
     private val productRepository: ProductRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val validation: Validation
 ) {
     @Transactional
     fun addOrder(
@@ -68,11 +67,14 @@ class OrderService(
     }
 
     @Transactional
-    fun getOrder(userDetails: UserDetails): ResponseEntity<Any> {
-        val user: User = userRepository.findByEmail(userDetails.username)
-            ?: return ResponseEntity
+    fun getOrder(userDetails: UserDetails, userInfo: String): ResponseEntity<Any> {
+        val user: User? = validation.variableCheck(userInfo)
+
+        if (user == null) {
+            return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body("유저 정보를 찾을 수 없습니다.")
+                .body("해당 유저를 찾을 수 없습니다.")
+        }
 
         val orders: List<Orders> = orderRepository.findByUser(user)
             ?: return ResponseEntity
@@ -111,6 +113,6 @@ class OrderService(
         val charset = ('A'..'Z') + ('0'..'9')
         return (1..length)
             .map { charset.random() }
-            .joinToString ("")
+            .joinToString("")
     }
 }
