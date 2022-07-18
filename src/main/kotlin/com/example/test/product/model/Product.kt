@@ -8,13 +8,11 @@
 
 package com.example.test.product.model
 
-import com.example.test.user.model.User
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
-import javax.persistence.ManyToOne
 
 /**
  * @author Hyunwoong Shim
@@ -26,5 +24,5 @@ class Product(
     val productId: Long = 0,
 
     @Column(length = 100)
-    val productName: String,
+    val productName: String
 )
