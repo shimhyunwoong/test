@@ -13,7 +13,7 @@ import com.example.test.exception.UserException
 import com.example.test.security.jwt.JwtTokenProvider
 import com.example.test.user.dto.LoginRequestDto
 import com.example.test.user.dto.RegisterRequestDto
-import com.example.test.user.model.User
+import com.example.test.user.dto.model.User
 import com.example.test.user.repository.UserRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
