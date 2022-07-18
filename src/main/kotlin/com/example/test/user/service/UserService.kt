@@ -117,10 +117,7 @@ class UserService(
 
         var pageUser: Page<User> = userRepository.findAll(pageable)
 
-        println(pageUser.size)
-        println(page.size)
-
-        if (page.size > pageUser.size) {
+        if (page.size >= pageUser.size) {
             val pageable: Pageable = PageRequest.of(page.page - 1, pageUser.size, sort)
             pageUser = userRepository.findAll(pageable)
         }
@@ -147,7 +144,7 @@ class UserService(
                 product = ProductResponseDto(
                     orderNum = find.product?.productName,
                     productName = find.product?.productName,
-                    orderDate = find.orders?.get(find.orders?.size!!)?.createdAt
+                    orderDate = find.orders?.get(find.orders?.size!! -1)?.createdAt
                 )
             }
             val membersInfo = MembersInfoResponseDto(
