@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -32,7 +33,8 @@ class OrderController(
     @PostMapping("/order/{productId}")
     fun addOrder(
         @AuthenticationPrincipal userDetails: UserDetails,
-        @PathVariable(value = "productId") productId: Long
+        @PathVariable(value = "productId") productId: Long,
+        @RequestHeader(value = "authorization") token: String
     ): ResponseEntity<Any> {
         return orderService.addOrder(userDetails, productId)
     }
@@ -41,7 +43,8 @@ class OrderController(
     @GetMapping("/order/{userInfo}")
     fun getOrder(
         @AuthenticationPrincipal userDetails: UserDetails,
-        @PathVariable(value = "userInfo") userInfo: String
+        @PathVariable(value = "userInfo") userInfo: String,
+        @RequestHeader(value = "authorization") token: String
     ): ResponseEntity<Any> {
         return orderService.getOrder(userDetails, userInfo)
     }

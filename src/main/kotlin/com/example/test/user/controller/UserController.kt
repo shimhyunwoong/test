@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -33,14 +34,18 @@ class UserController(
     @GetMapping("/user-info/{userInfo}")
     fun getUserInfo(
         @AuthenticationPrincipal userDetails: UserDetails,
-        @PathVariable(value = "userInfo") userInfo: String
+        @PathVariable(value = "userInfo") userInfo: String,
+        @RequestHeader(value = "authorization") token: String
     ): ResponseEntity<Any> {
         return userService.getUserInfo(userDetails, userInfo)
     }
 
     @ApiOperation("전체 유저 조회")
     @GetMapping("/member")
-    fun getMemberList(@AuthenticationPrincipal userDetails: UserDetails): ResponseEntity<Any> {
+    fun getMemberList(
+        @AuthenticationPrincipal userDetails: UserDetails,
+        @RequestHeader(value = "authorization") token: String
+    ): ResponseEntity<Any> {
         return userService.getMemberList(userDetails)
     }
 
@@ -48,7 +53,8 @@ class UserController(
     @GetMapping("/user/list")
     fun getPage(
         @AuthenticationPrincipal userDetails: UserDetails,
-        @RequestBody getPage: PageRequestDto
+        @RequestBody getPage: PageRequestDto,
+        @RequestHeader(value = "authorization") token: String
     ): ArrayList<MembersInfoResponseDto> {
         return userService.getPage(userDetails, getPage)
     }
