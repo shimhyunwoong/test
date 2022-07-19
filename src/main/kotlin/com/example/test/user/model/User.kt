@@ -48,7 +48,6 @@ class User(
     @OneToMany(mappedBy = "user")
     val orders: List<Orders>?,
 
-    //ToDo 연관관계 다시 맺기
     @OneToOne
     var product: Product?
 ) :
