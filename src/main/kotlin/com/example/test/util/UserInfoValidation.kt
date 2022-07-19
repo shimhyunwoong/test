@@ -16,16 +16,27 @@ import org.springframework.stereotype.Component
  * @author Hyunwoong Shim
  */
 @Component
-class Validation(
+class UserInfoValidation(
     private val userRepository: UserRepository
 ) {
     // 이메일, 이름 체크
-    fun variableCheck(user: String): User? {
+    fun userInfoStringCheck(user: String): User? {
         var findUser: User?
         if (user.contains("@")) {
             findUser = userRepository.findByEmail(user)
         } else {
             findUser = userRepository.findByName(user)
+        }
+        return findUser
+    }
+
+    //검색 기능
+    fun searchStringCheck(user: String): List<User>? {
+        var findUser: List<User>?
+        if (user.contains("@")) {
+            findUser = userRepository.findByEmailContaining(user)
+        } else {
+            findUser = userRepository.findByNameContaining(user)
         }
         return findUser
     }

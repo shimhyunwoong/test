@@ -14,7 +14,7 @@ import com.example.test.user.dto.PageRequestDto
 import com.example.test.user.dto.UserInfoResponseDto
 import com.example.test.user.model.User
 import com.example.test.user.repository.UserRepository
-import com.example.test.util.Validation
+import com.example.test.util.UserInfoValidation
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -31,28 +31,33 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class UserService(
     private val userRepository: UserRepository,
-    private val validation: Validation
+    private val validation: UserInfoValidation
 ) {
     fun getUserInfo(userDetails: UserDetails, userInfo: String): ResponseEntity<Any> {
 
-        val findUser: User? = validation.variableCheck(userInfo)
+        val findUser: List<User>? = validation.searchStringCheck(userInfo)
 
         if (findUser == null) {
             return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body("해당 유저를 찾을 수 없습니다.")
         }
+        val result: ArrayList<UserInfoResponseDto> = ArrayList()
 
-        val userInfoResponseDto = UserInfoResponseDto(
-            name = findUser.name,
-            email = findUser.email,
-            nickname = findUser.nickName,
-            phone = findUser.phone,
-            gender = findUser.gender
-        )
+        for (user in findUser) {
+            val userInfoResponseDto = UserInfoResponseDto(
+                name = user.name,
+                email = user.email,
+                nickname = user.nickName,
+                phone = user.phone,
+                gender = user.gender
+            )
+            result.add(userInfoResponseDto)
+        }
+
         return ResponseEntity
             .ok()
-            .body(userInfoResponseDto)
+            .body(result)
     }
 
     @Transactional
@@ -143,7 +148,7 @@ class UserService(
                 product = ProductResponseDto(
                     orderNum = find.product?.productName,
                     productName = find.product?.productName,
-                    orderDate = find.orders?.get(find.orders?.size!! -1)?.createdAt
+                    orderDate = find.orders?.get(find.orders?.size!! - 1)?.createdAt
                 )
             }
             val membersInfo = MembersInfoResponseDto(

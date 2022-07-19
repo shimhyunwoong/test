@@ -16,7 +16,7 @@ import com.example.test.product.model.Product
 import com.example.test.product.repository.ProductRepository
 import com.example.test.user.model.User
 import com.example.test.user.repository.UserRepository
-import com.example.test.util.Validation
+import com.example.test.util.UserInfoValidation
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -32,7 +32,7 @@ class OrderService(
     private val orderRepository: OrderRepository,
     private val productRepository: ProductRepository,
     private val userRepository: UserRepository,
-    private val validation: Validation
+    private val validation: UserInfoValidation
 ) {
     @Transactional
     fun addOrder(
@@ -68,7 +68,7 @@ class OrderService(
 
     @Transactional
     fun getOrder(userDetails: UserDetails, userInfo: String): ResponseEntity<Any> {
-        val user: User? = validation.variableCheck(userInfo)
+        val user: User? = validation.userInfoStringCheck(userInfo)
 
         if (user == null) {
             return ResponseEntity
