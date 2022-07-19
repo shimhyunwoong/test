@@ -101,7 +101,6 @@ class UserService(
                 )
                 response.add(memberInfo)
             }
-
         }
         return ResponseEntity
             .ok()
