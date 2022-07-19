@@ -8,13 +8,13 @@
 
 package com.example.test.user.service
 
+import com.example.test.exception.CustomException
+import com.example.test.exception.ErrorCode
 import com.example.test.security.jwt.JwtTokenProvider
 import com.example.test.user.dto.LoginRequestDto
 import com.example.test.user.dto.RegisterRequestDto
 import com.example.test.user.model.User
 import com.example.test.user.repository.UserRepository
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -26,20 +26,16 @@ class LoginService(
     private val jwtTokenProvider: JwtTokenProvider
 ) {
     @Transactional
-    fun register(registerDto: RegisterRequestDto): ResponseEntity<Any> {
+    fun register(registerDto: RegisterRequestDto): String {
 
         val findUser: User? = userRepository.findByEmail(registerDto.email)
 
         if (findUser != null) {
-            return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("이미 가입된 아이디 입니다.")
+            throw CustomException(ErrorCode.ALREADY_USER)
         }
 
         if (registerDto.pw != registerDto.pwCheck) {
-            return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("비밀번호가 맞지 않습니다.")
+            throw CustomException(ErrorCode.FAIL_PASSWORD)
         }
 
         val user = User(
@@ -54,28 +50,20 @@ class LoginService(
         )
 
         userRepository.save(user)
-        return ResponseEntity
-            .ok()
-            .body("Success")
+        return "Success"
     }
 
     @Transactional
-    fun login(loginRequestDto: LoginRequestDto): ResponseEntity<Any> {
+    fun login(loginRequestDto: LoginRequestDto): String {
         val user: User = userRepository.findByEmail(loginRequestDto.email)
-            ?: return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body("가입되지 않은 유저입니다.")
+            ?: throw CustomException(ErrorCode.NOT_FOUN_USER)
 
         if (!passwordEncoder.matches(loginRequestDto.pw, user.password)) {
-            return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("비밀번호가 일치하지 않습니다.")
+            throw CustomException(ErrorCode.FAIL_PASSWORD)
         }
 
         val token: String = jwtTokenProvider.createToken(user.email)
 
-        return ResponseEntity
-            .ok()
-            .body("Beara: " + token)
+        return "Beara: " + token
     }
 }

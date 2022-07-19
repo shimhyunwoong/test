@@ -8,9 +8,9 @@
 
 package com.example.test.orders.controller
 
+import com.example.test.orders.dto.OrderResponseDto
 import com.example.test.orders.service.OrderService
 import io.swagger.annotations.ApiOperation
-import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.GetMapping
@@ -34,7 +34,7 @@ class OrderController(
         @AuthenticationPrincipal userDetails: UserDetails,
         @PathVariable(value = "productId") productId: Long,
         @RequestHeader(value = "authorization") token: String
-    ): ResponseEntity<Any> {
+    ): String {
         return orderService.addOrder(userDetails, productId)
     }
 
@@ -44,7 +44,7 @@ class OrderController(
         @AuthenticationPrincipal userDetails: UserDetails,
         @PathVariable(value = "userInfo") userInfo: String,
         @RequestHeader(value = "authorization") token: String
-    ): ResponseEntity<Any> {
+    ): OrderResponseDto {
         return orderService.getOrder(userDetails, userInfo)
     }
 }

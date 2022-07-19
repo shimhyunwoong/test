@@ -8,6 +8,8 @@
 
 package com.example.test.orders.service
 
+import com.example.test.exception.CustomException
+import com.example.test.exception.ErrorCode
 import com.example.test.orders.dto.OrderResponseDto
 import com.example.test.orders.model.Orders
 import com.example.test.orders.repository.OrderRepository
@@ -18,8 +20,6 @@ import com.example.test.user.model.User
 import com.example.test.user.repository.UserRepository
 import com.example.test.util.UserInfoValidation
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -38,16 +38,12 @@ class OrderService(
     fun addOrder(
         userDetails: UserDetails,
         productId: Long
-    ): ResponseEntity<Any> {
+    ): String {
         val user: User = userRepository.findByEmail(userDetails.username)
-            ?: return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body("유저 정보를 찾을 수 없습니다.")
+            ?: throw CustomException(ErrorCode.NOT_FOUN_USER)
 
         val product: Product = productRepository.findByIdOrNull(productId)
-            ?: return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body("없는 상품입니다.")
+            ?: throw CustomException(ErrorCode.NOT_FOOUND_PRODUCT)
 
         val orderNum = getRandomNum(12)
         val orders = Orders(
@@ -61,30 +57,23 @@ class OrderService(
         user.product = product
         userRepository.save(user)
 
-        return ResponseEntity
-            .ok()
-            .body("주문 완료")
+        return "주문 완료"
     }
 
     @Transactional
-    fun getOrder(userDetails: UserDetails, userInfo: String): ResponseEntity<Any> {
+    fun getOrder(uerDetails: UserDetails, userInfo: String): OrderResponseDto {
         val user: User = validation.userInfoStringCheck(userInfo)
-            ?: return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body("해당 유저를 찾을 수 없습니다.")
+            ?: throw CustomException(ErrorCode.NOT_FOUN_USER)
 
         val orders: List<Orders> = orderRepository.findByUser(user)
-            ?: return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body("주문 상품이 존재하지 않습니다.")
+            ?: throw CustomException(ErrorCode.NOT_FOND_ORDER)
 
         val response = ArrayList<ProductResponseDto>()
 
         for (order in orders) {
             val product: Product = productRepository.findByProductId(order.product.productId)
-                ?: return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body("상품이 존재하지 않습니다.")
+                ?: throw CustomException(ErrorCode.NOT_FOOUND_PRODUCT)
+
             val productResponseDto = ProductResponseDto(
                 orderNum = order.orderNum,
                 orderDate = order.createdAt,
@@ -93,14 +82,10 @@ class OrderService(
             response.add(productResponseDto)
         }
 
-        val ordersResponseDto = OrderResponseDto(
+        return OrderResponseDto(
             username = user.name,
             response = response
         )
-
-        return ResponseEntity
-            .ok()
-            .body(ordersResponseDto)
     }
 
     //OrderNum 랜덤한 영문 대문자, 숫자 조합

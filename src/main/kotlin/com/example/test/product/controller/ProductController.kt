@@ -8,9 +8,9 @@
 
 package com.example.test.product.controller
 
+import com.example.test.product.model.Product
 import com.example.test.product.service.ProductService
 import io.swagger.annotations.ApiOperation
-import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.PathVariable
@@ -34,7 +34,7 @@ class ProductController(
         @AuthenticationPrincipal userDetails: UserDetails,
         @PathVariable(value = "name") productName: String,
         @RequestHeader(value = "authorization") token: String
-    ): ResponseEntity<Any> {
+    ): Product {
         return productService.createProduct(userDetails, productName)
     }
 }

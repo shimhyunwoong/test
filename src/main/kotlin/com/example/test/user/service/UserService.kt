@@ -8,6 +8,8 @@
 
 package com.example.test.user.service
 
+import com.example.test.exception.CustomException
+import com.example.test.exception.ErrorCode
 import com.example.test.product.dto.ProductResponseDto
 import com.example.test.user.dto.MembersInfoResponseDto
 import com.example.test.user.dto.PageRequestDto
@@ -19,8 +21,6 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -33,11 +33,12 @@ class UserService(
     private val userRepository: UserRepository,
     private val validation: UserInfoValidation
 ) {
-    fun getUserInfo(userDetails: UserDetails, userInfo: String): ResponseEntity<Any> {
-        val findUser: List<User> = validation.searchStringCheck(userInfo)
-            ?: return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body("해당 유저를 찾을 수 없습니다.")
+    fun getUserInfo(userDetails: UserDetails, userInfo: String): ArrayList<UserInfoResponseDto> {
+        val findUser: List<User>? = validation.searchStringCheck(userInfo)
+
+        if (findUser!!.size == 0) {
+            throw CustomException(ErrorCode.NOT_FOUN_USER)
+        }
 
         val result: ArrayList<UserInfoResponseDto> = ArrayList()
 
@@ -51,14 +52,11 @@ class UserService(
             )
             result.add(userInfoResponseDto)
         }
-
-        return ResponseEntity
-            .ok()
-            .body(result)
+        return result
     }
 
     @Transactional
-    fun getMemberList(userDetails: UserDetails): ResponseEntity<Any> {
+    fun getMemberList(userDetails: UserDetails): ArrayList<MembersInfoResponseDto> {
         val users: List<User> = userRepository.findAll()
 
         val response: ArrayList<MembersInfoResponseDto> = ArrayList()
@@ -99,9 +97,7 @@ class UserService(
                 response.add(memberInfo)
             }
         }
-        return ResponseEntity
-            .ok()
-            .body(response)
+        return response
     }
 
     //페이징

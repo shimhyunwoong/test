@@ -13,7 +13,6 @@ import com.example.test.user.dto.RegisterRequestDto
 import com.example.test.user.service.LoginService
 import io.swagger.annotations.ApiOperation
 import javax.validation.Valid
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -29,8 +28,7 @@ class LoginController(
     @PostMapping("/register")
     fun register(
         @RequestBody @Valid registerDto: RegisterRequestDto
-    ): ResponseEntity<Any> {
-
+    ): String {
         return loginService.register(registerDto)
     }
 
@@ -38,7 +36,7 @@ class LoginController(
     @PostMapping("/login")
     fun login(
         @RequestBody loginRequestDto: LoginRequestDto
-    ): ResponseEntity<Any> {
+    ): String {
         return loginService.login(loginRequestDto)
     }
 }

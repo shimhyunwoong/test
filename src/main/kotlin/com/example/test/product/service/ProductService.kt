@@ -8,10 +8,10 @@
 
 package com.example.test.product.service
 
+import com.example.test.exception.CustomException
+import com.example.test.exception.ErrorCode
 import com.example.test.product.model.Product
 import com.example.test.product.repository.ProductRepository
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -24,18 +24,18 @@ class ProductService(
     private val productRepository: ProductRepository
 ) {
     @Transactional
-    fun createProduct(userDetails: UserDetails, productName: String): ResponseEntity<Any> {
-        val findProduct: Product = productRepository.findByProductName(productName)
-            ?: return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body("이미 등록된 상품이 존재합니다.")
+    fun createProduct(userDetails: UserDetails, productName: String): Product {
+        val findProduct: Product? = productRepository.findByProductName(productName)
+
+        if (findProduct != null) {
+            throw CustomException(ErrorCode.ALREADY_PRODUCT)
+        }
 
         val product = Product(
             productName = productName
         )
+
         productRepository.save(product)
-        return ResponseEntity
-            .ok()
-            .body(product)
+        return product
     }
 }
