@@ -68,13 +68,10 @@ class OrderService(
 
     @Transactional
     fun getOrder(userDetails: UserDetails, userInfo: String): ResponseEntity<Any> {
-        val user: User? = validation.userInfoStringCheck(userInfo)
-
-        if (user == null) {
-            return ResponseEntity
+        val user: User = validation.userInfoStringCheck(userInfo)
+            ?: return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body("해당 유저를 찾을 수 없습니다.")
-        }
 
         val orders: List<Orders> = orderRepository.findByUser(user)
             ?: return ResponseEntity

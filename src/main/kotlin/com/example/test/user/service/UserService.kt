@@ -34,14 +34,11 @@ class UserService(
     private val validation: UserInfoValidation
 ) {
     fun getUserInfo(userDetails: UserDetails, userInfo: String): ResponseEntity<Any> {
-
-        val findUser: List<User>? = validation.searchStringCheck(userInfo)
-
-        if (findUser == null) {
-            return ResponseEntity
+        val findUser: List<User> = validation.searchStringCheck(userInfo)
+            ?: return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body("해당 유저를 찾을 수 없습니다.")
-        }
+
         val result: ArrayList<UserInfoResponseDto> = ArrayList()
 
         for (user in findUser) {

@@ -16,4 +16,5 @@ import org.springframework.data.jpa.repository.JpaRepository
  */
 interface ProductRepository : JpaRepository<Product, Long> {
     fun findByProductId(product: Long?): Product?
+    fun findByProductName(productName: String): Product?
 }

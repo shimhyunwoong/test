@@ -61,13 +61,10 @@ class LoginService(
 
     @Transactional
     fun login(loginRequestDto: LoginRequestDto): ResponseEntity<Any> {
-        val user: User? = userRepository.findByEmail(loginRequestDto.email)
-
-        if (user == null) {
-            return ResponseEntity
+        val user: User = userRepository.findByEmail(loginRequestDto.email)
+            ?: return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body("가입되지 않은 유저입니다.")
-        }
 
         if (!passwordEncoder.matches(loginRequestDto.pw, user.password)) {
             return ResponseEntity
