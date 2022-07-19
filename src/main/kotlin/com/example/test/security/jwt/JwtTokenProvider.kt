@@ -56,7 +56,6 @@ class JwtTokenProvider(private val userDetailsService: UserDetailsService) {
     // 토큰의 유효성 + 만료일자 확인
     fun validateToken(jwtToken: String?): Boolean {
         return try {
-//            val token: String = jwtToken.replace("Bearer", "")
             val claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken)
             !claims.body.expiration.before(Date())
         } catch (e: Exception) {

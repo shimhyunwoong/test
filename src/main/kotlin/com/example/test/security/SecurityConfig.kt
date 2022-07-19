@@ -42,7 +42,7 @@ class SecurityConfig(private val jwtTokenProvider: JwtTokenProvider) : WebSecuri
             .and()
             .logout()
             .logoutUrl("/api/logout")
-            .logoutSuccessUrl("/")
+            .logoutSuccessUrl("/api/login")
             .invalidateHttpSession(true)
             .deleteCookies("JSESSIONID")
     }

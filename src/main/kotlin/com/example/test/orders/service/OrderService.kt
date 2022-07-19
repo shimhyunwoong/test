@@ -107,7 +107,7 @@ class OrderService(
     }
 
     //OrderNum 랜덤한 영문 대문자, 숫자 조합
-    fun getRandomNum(length: Int): String {
+    private fun getRandomNum(length: Int): String {
         val charset = ('A'..'Z') + ('0'..'9')
         return (1..length)
             .map { charset.random() }
