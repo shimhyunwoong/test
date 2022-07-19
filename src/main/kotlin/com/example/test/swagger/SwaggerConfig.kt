@@ -38,7 +38,10 @@ class SwaggerConfig {
     private fun metaInfo(): ApiInfo {
         return ApiInfoBuilder()
             .title("API 문서")
-            .description("Backend API 문서")
+            .description(
+                "\"email\": \"test1@email.com\",\n" +
+                        "  \"pw\": \"1qassss2w!Ws\""
+            )
             .version("1.0")
             .termsOfServiceUrl("http://localhost:8080")
             .license("Apache")

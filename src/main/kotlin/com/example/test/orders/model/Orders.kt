@@ -36,5 +36,4 @@ class Orders(
 
     @ManyToOne(fetch = FetchType.LAZY)
     val user: User
-
 ) : Timestamped()
