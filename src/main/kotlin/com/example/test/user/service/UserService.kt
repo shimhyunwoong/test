@@ -36,7 +36,7 @@ class UserService(
     fun getUserInfo(userDetails: UserDetails, userInfo: String): ArrayList<UserInfoResponseDto> {
         val findUser: List<User>? = validation.searchStringCheck(userInfo)
 
-        if (findUser!!.size == 0) {
+        if (findUser!!.isEmpty()) {
             throw CustomException(ErrorCode.NOT_FOUN_USER)
         }
 
