@@ -43,7 +43,7 @@ class OrderService(
             ?: throw CustomException(ErrorCode.NOT_FOUN_USER)
 
         val product: Product = productRepository.findByIdOrNull(productId)
-            ?: throw CustomException(ErrorCode.NOT_FOOUND_PRODUCT)
+            ?: throw CustomException(ErrorCode.NOT_FOND_PRODUCT)
 
         val orderNum = getRandomNum(12)
         val orders = Orders(
@@ -72,7 +72,7 @@ class OrderService(
 
         for (order in orders) {
             val product: Product = productRepository.findByProductId(order.product.productId)
-                ?: throw CustomException(ErrorCode.NOT_FOOUND_PRODUCT)
+                ?: throw CustomException(ErrorCode.NOT_FOND_PRODUCT)
 
             val productResponseDto = ProductResponseDto(
                 orderNum = order.orderNum,

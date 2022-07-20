@@ -24,6 +24,6 @@ enum class ErrorCode(
 
     NOT_FOND_ORDER(HttpStatus.NOT_FOUND, "ORDER-2001", "주문 상품이 존재하지 않습니다."),
 
-    NOT_FOOUND_PRODUCT(HttpStatus.NOT_FOUND, "PRODUCT-3001", "상품이 존재하지 않습니다."),
+    NOT_FOND_PRODUCT(HttpStatus.NOT_FOUND, "PRODUCT-3001", "상품이 존재하지 않습니다."),
     ALREADY_PRODUCT(HttpStatus.BAD_REQUEST, "PRODUCT-3002", "이미 등록된 상품이 존재합니다.")
 }
