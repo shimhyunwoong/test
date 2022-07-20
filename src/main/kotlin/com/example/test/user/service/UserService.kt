@@ -43,23 +43,13 @@ class UserService(
 
         val result: ArrayList<MembersInfoResponseDto> = ArrayList()
 
-        var pageUser: Page<User>
 
         val sort: Sort = Sort.by(direction, page.sortBy)
         var pageable: Pageable = PageRequest.of(page.page - 1, page.size, sort)
 
-        if (page.userInfo == null) {
-            pageUser = userRepository.findAll(pageable)
-            if (page.size >= pageUser.size) {
-                pageable = PageRequest.of(page.page - 1, pageUser.size, sort)
-                pageUser = userRepository.findAll(pageable)
-            }
-        } else {
-            pageUser = validation.searchStringCheck(page.userInfo, pageable)
-            if (page.size >= pageUser.size) {
-                pageable = PageRequest.of(page.page - 1, pageUser.size, sort)
-                pageUser = validation.searchStringCheck(page.userInfo, pageable)
-            }
+        var pageUser: Page<User> = when (page.userInfo) {
+            null -> userRepository.findAll(pageable)
+            else -> validation.searchStringCheck(page.userInfo, pageable)
         }
 
         if (pageUser.isEmpty) {
