@@ -70,32 +70,24 @@ class UserService(
                 gender = find.gender
             )
 
-            if (find.orders?.size!! == 0) {
-                val lastOrder = ProductResponseDto(
+            val lastOrder = when (find.orders?.size) {
+                0 -> ProductResponseDto(
                     orderNum = null,
                     productName = null,
                     orderDate = null
                 )
-
-                val memberInfo = MembersInfoResponseDto(
-                    userInfo = userinfo,
-                    lastOrder = lastOrder
-                )
-                response.add(memberInfo)
-
-            } else {
-                val lastOrder = ProductResponseDto(
+                else -> ProductResponseDto(
                     orderNum = find.orders?.get(find.orders!!.size - 1)!!.orderNum,
                     productName = find.product?.productName,
                     orderDate = find.orders?.get(find.orders!!.size - 1)!!.createdAt
                 )
-
-                val memberInfo = MembersInfoResponseDto(
-                    userInfo = userinfo,
-                    lastOrder = lastOrder
-                )
-                response.add(memberInfo)
             }
+
+            val memberInfo = MembersInfoResponseDto(
+                userInfo = userinfo,
+                lastOrder = lastOrder
+            )
+            response.add(memberInfo)
         }
         return response
     }
