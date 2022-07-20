@@ -10,6 +10,8 @@ package com.example.test.util
 
 import com.example.test.user.model.User
 import com.example.test.user.repository.UserRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
 
 /**
@@ -29,10 +31,10 @@ class UserInfoValidation(
     }
 
     //검색 기능
-    fun searchStringCheck(user: String): List<User>? {
-        val findUser: List<User>? = when (user.contains("@")) {
-            true -> userRepository.findByEmailContaining(user)
-            else -> userRepository.findByNameContaining(user)
+    fun searchStringCheck(user: String, pageable: Pageable): Page<User> {
+        val findUser: Page<User> = when (user.contains("@")) {
+            true -> userRepository.findByEmailContaining(user, pageable)
+            else -> userRepository.findByNameContaining(user, pageable)
         }
         return findUser
     }

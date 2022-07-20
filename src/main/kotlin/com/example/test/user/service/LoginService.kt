@@ -61,9 +61,6 @@ class LoginService(
         if (!passwordEncoder.matches(loginRequestDto.pw, user.password)) {
             throw CustomException(ErrorCode.FAIL_PASSWORD)
         }
-
-        val token: String = jwtTokenProvider.createToken(user.email)
-
-        return "Beara: " + token
+        return jwtTokenProvider.createToken(user.email)
     }
 }

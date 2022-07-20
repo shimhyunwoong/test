@@ -9,12 +9,15 @@
 package com.example.test.user.repository
 
 import com.example.test.user.model.User
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface UserRepository : JpaRepository<User, Long> {
     fun findByEmail(email: String): User?
     fun findByName(name: String): User?
-    fun findByNameContaining(name: String): List<User>?
-    fun findByEmailContaining(email: String): List<User>?
+    fun findByNameContaining(name: String, pageable: Pageable): Page<User>
+    fun findByEmailContaining(email: String, pageable: Pageable): Page<User>
+
 
 }

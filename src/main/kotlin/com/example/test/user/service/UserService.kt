@@ -33,84 +33,38 @@ class UserService(
     private val userRepository: UserRepository,
     private val validation: UserInfoValidation
 ) {
-    fun getUserInfo(userDetails: UserDetails, userInfo: String): ArrayList<UserInfoResponseDto> {
-        val findUser: List<User>? = validation.searchStringCheck(userInfo)
-
-        if (findUser!!.isEmpty()) {
-            throw CustomException(ErrorCode.NOT_FOUN_USER)
-        }
-
-        val result: ArrayList<UserInfoResponseDto> = ArrayList()
-
-        for (user in findUser) {
-            val userInfoResponseDto = UserInfoResponseDto(
-                name = user.name,
-                email = user.email,
-                nickname = user.nickName,
-                phone = user.phone,
-                gender = user.gender
-            )
-            result.add(userInfoResponseDto)
-        }
-        return result
-    }
-
     @Transactional
-    fun getMemberList(userDetails: UserDetails): ArrayList<MembersInfoResponseDto> {
-        val users: List<User> = userRepository.findAll()
-
-        val response: ArrayList<MembersInfoResponseDto> = ArrayList()
-
-        for (find in users) {
-            val userinfo = UserInfoResponseDto(
-                name = find.name,
-                email = find.email,
-                nickname = find.email,
-                phone = find.phone,
-                gender = find.gender
-            )
-
-            val lastOrder = when (find.orders?.size) {
-                0 -> ProductResponseDto(
-                    orderNum = null,
-                    productName = null,
-                    orderDate = null
-                )
-                else -> ProductResponseDto(
-                    orderNum = find.orders?.get(find.orders!!.size - 1)!!.orderNum,
-                    productName = find.product?.productName,
-                    orderDate = find.orders?.get(find.orders!!.size - 1)!!.createdAt
-                )
-            }
-
-            val memberInfo = MembersInfoResponseDto(
-                userInfo = userinfo,
-                lastOrder = lastOrder
-            )
-            response.add(memberInfo)
-        }
-        return response
-    }
-
-    //페이징
-    @Transactional
-    fun getPage(userDetails: UserDetails, page: PageRequestDto): ArrayList<MembersInfoResponseDto> {
+    fun getMemberList(userDetails: UserDetails, page: PageRequestDto): ArrayList<MembersInfoResponseDto> {
         val direction: Sort.Direction =
             when (page.isAsc) {
                 true -> Sort.Direction.ASC
                 else -> Sort.Direction.DESC
             }
 
-        val sort: Sort = Sort.by(direction, page.sortBy)
-        val pageable: Pageable = PageRequest.of(page.page - 1, page.size, sort)
-        var pageUser: Page<User> = userRepository.findAll(pageable)
+        val result: ArrayList<MembersInfoResponseDto> = ArrayList()
 
-        if (page.size >= pageUser.size) {
-            val pageable: Pageable = PageRequest.of(page.page - 1, pageUser.size, sort)
+        var pageUser: Page<User>
+
+        val sort: Sort = Sort.by(direction, page.sortBy)
+        var pageable: Pageable = PageRequest.of(page.page - 1, page.size, sort)
+
+        if (page.userInfo == null) {
             pageUser = userRepository.findAll(pageable)
+            if (page.size >= pageUser.size) {
+                pageable = PageRequest.of(page.page - 1, pageUser.size, sort)
+                pageUser = userRepository.findAll(pageable)
+            }
+        } else {
+            pageUser = validation.searchStringCheck(page.userInfo, pageable)
+            if (page.size >= pageUser.size) {
+                pageable = PageRequest.of(page.page - 1, pageUser.size, sort)
+                pageUser = validation.searchStringCheck(page.userInfo, pageable)
+            }
         }
 
-        val result: ArrayList<MembersInfoResponseDto> = ArrayList()
+        if (pageUser.isEmpty) {
+            throw CustomException(ErrorCode.NOT_FOUN_USER)
+        }
 
         for (find in pageUser) {
             val userInfo = UserInfoResponseDto(

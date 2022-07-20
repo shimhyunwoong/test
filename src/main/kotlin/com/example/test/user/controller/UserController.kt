@@ -10,13 +10,10 @@ package com.example.test.user.controller
 
 import com.example.test.user.dto.MembersInfoResponseDto
 import com.example.test.user.dto.PageRequestDto
-import com.example.test.user.dto.UserInfoResponseDto
 import com.example.test.user.service.UserService
 import io.swagger.annotations.ApiOperation
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
@@ -31,32 +28,13 @@ import org.springframework.web.bind.annotation.RestController
 class UserController(
     private val userService: UserService
 ) {
-    @ApiOperation("단일 유저 정보 조회, email or name")
-    @GetMapping("/user-info/{userInfo}")
-    fun getUserInfo(
-        @AuthenticationPrincipal userDetails: UserDetails,
-        @PathVariable(value = "userInfo") userInfo: String,
-        @RequestHeader(value = "authorization") token: String
-    ): ArrayList<UserInfoResponseDto> {
-        return userService.getUserInfo(userDetails, userInfo)
-    }
-
-    @ApiOperation("전체 유저 조회")
-    @GetMapping("/member")
-    fun getMemberList(
-        @AuthenticationPrincipal userDetails: UserDetails,
-        @RequestHeader(value = "authorization") token: String
-    ): ArrayList<MembersInfoResponseDto> {
-        return userService.getMemberList(userDetails)
-    }
-
-    @ApiOperation("회원 목록 조회")
+    @ApiOperation("전체 유저 검색 / 조회")
     @PostMapping("/user/list")
     fun getPage(
         @AuthenticationPrincipal userDetails: UserDetails,
         @RequestBody getPage: PageRequestDto,
         @RequestHeader(value = "authorization") token: String
     ): ArrayList<MembersInfoResponseDto> {
-        return userService.getPage(userDetails, getPage)
+        return userService.getMemberList(userDetails, getPage)
     }
 }
