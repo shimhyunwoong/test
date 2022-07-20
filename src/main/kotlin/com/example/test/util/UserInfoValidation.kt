@@ -21,22 +21,18 @@ class UserInfoValidation(
 ) {
     // 이메일, 이름 체크
     fun userInfoStringCheck(user: String): User? {
-        var findUser: User?
-        if (user.contains("@")) {
-            findUser = userRepository.findByEmail(user)
-        } else {
-            findUser = userRepository.findByName(user)
+        val findUser: User? = when (user.contains("@")) {
+            true -> userRepository.findByEmail(user)
+            else -> userRepository.findByName(user)
         }
         return findUser
     }
 
     //검색 기능
     fun searchStringCheck(user: String): List<User>? {
-        var findUser: List<User>?
-        if (user.contains("@")) {
-            findUser = userRepository.findByEmailContaining(user)
-        } else {
-            findUser = userRepository.findByNameContaining(user)
+        val findUser: List<User>? = when (user.contains("@")) {
+            true -> userRepository.findByEmailContaining(user)
+            else -> userRepository.findByNameContaining(user)
         }
         return findUser
     }
