@@ -104,13 +104,13 @@ class UserService(
     @Transactional
     fun getPage(userDetails: UserDetails, page: PageRequestDto): ArrayList<MembersInfoResponseDto> {
         val direction: Sort.Direction =
-            when {
-                page.isAsc -> Sort.Direction.ASC
+            when (page.isAsc) {
+                true -> Sort.Direction.ASC
                 else -> Sort.Direction.DESC
             }
+
         val sort: Sort = Sort.by(direction, page.sortBy)
         val pageable: Pageable = PageRequest.of(page.page - 1, page.size, sort)
-
         var pageUser: Page<User> = userRepository.findAll(pageable)
 
         if (page.size >= pageUser.size) {
@@ -128,21 +128,20 @@ class UserService(
                 phone = find.phone,
                 gender = find.gender
             )
-            var product: ProductResponseDto
 
-            if (find.orders?.size == 0) {
-                product = ProductResponseDto(
+            val product: ProductResponseDto = when (find.orders!!.size) {
+                0 -> ProductResponseDto(
                     orderNum = null,
                     productName = null,
                     orderDate = null
                 )
-            } else {
-                product = ProductResponseDto(
+                else -> ProductResponseDto(
                     orderNum = find.product?.productName,
                     productName = find.product?.productName,
                     orderDate = find.orders?.get(find.orders?.size!! - 1)?.createdAt
                 )
             }
+
             val membersInfo = MembersInfoResponseDto(
                 userInfo = userInfo,
                 lastOrder = product
