@@ -11,7 +11,7 @@ package com.example.test.user.dto
 /**
  * @author Hyunwoong Shim
  */
-data class LoginRequestDto(
+data class LoginRequestDto( //벨리드
     val email: String,
     val pw: String
 )

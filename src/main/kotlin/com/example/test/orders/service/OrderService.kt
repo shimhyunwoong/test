@@ -40,16 +40,16 @@ class OrderService(
         productId: Long
     ): String {
         val user: User = userRepository.findByEmail(userDetails.username)
-            ?: throw CustomException(ErrorCode.NOT_FOUN_USER)
+                ?: throw CustomException(ErrorCode.NOT_FOUN_USER)
 
         val product: Product = productRepository.findByIdOrNull(productId)
-            ?: throw CustomException(ErrorCode.NOT_FOND_PRODUCT)
+                ?: throw CustomException(ErrorCode.NOT_FOND_PRODUCT)
 
         val orderNum = getRandomNum(12)
         val orders = Orders(
-            orderNum = orderNum,
-            product = product,
-            user = user
+                orderNum = orderNum,
+                product = product,
+                user = user
         )
 
         orderRepository.save(orders)
@@ -57,22 +57,25 @@ class OrderService(
         user.product = product
         userRepository.save(user)
 
-        return "주문 완료"
+        return "주문 완료" //json 형태로 return ,responseEntity
     }
 
     @Transactional
     fun getOrder(uerDetails: UserDetails, userInfo: String): OrderResponseDto {
-        val user: User = validation.userInfoStringCheck(userInfo)
+        val user: User = validation.userInfoStringCheck(userInfo) //유저 체크 함수로 만들기
             ?: throw CustomException(ErrorCode.NOT_FOUN_USER)
 
         val orders: List<Orders> = orderRepository.findByUser(user)
-            ?: throw CustomException(ErrorCode.NOT_FOND_ORDER)
+        if (orders.isEmpty()) {
+            throw CustomException(ErrorCode.NOT_FOND_ORDER)
+        }
 
-        val response = ArrayList<ProductResponseDto>()
+        val response = ArrayList<ProductResponseDto>() //ArrayList 사용전 고민해보기
 
         for (order in orders) {
-            val product: Product = productRepository.findByProductId(order.product.productId)
-                ?: throw CustomException(ErrorCode.NOT_FOND_PRODUCT)
+            val product : Product= order.product
+//                    productRepository.findByProductId(order.product.productId)
+//                ?: throw CustomException(ErrorCode.NOT_FOND_PRODUCT)
 
             val productResponseDto = ProductResponseDto(
                 orderNum = order.orderNum,

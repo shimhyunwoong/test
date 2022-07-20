@@ -22,7 +22,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 @Entity
-class User(
+class User( //필수 값만 받는 생성자 만들기
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val userId: Long = 0,
@@ -46,7 +46,7 @@ class User(
     val gender: String?,
 
     @OneToMany(mappedBy = "user")
-    val orders: List<Orders>?,
+    val orders: List<Orders>,
 
     @OneToOne
     var product: Product?

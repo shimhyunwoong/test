@@ -33,7 +33,6 @@ class UserService(
     private val userRepository: UserRepository,
     private val validation: UserInfoValidation
 ) {
-    @Transactional
     fun getMemberList(userDetails: UserDetails, page: PageRequestDto): ArrayList<MembersInfoResponseDto> {
         val direction: Sort.Direction =
             when (page.isAsc) {
@@ -43,20 +42,15 @@ class UserService(
 
         val result: ArrayList<MembersInfoResponseDto> = ArrayList()
 
-
         val sort: Sort = Sort.by(direction, page.sortBy)
-        var pageable: Pageable = PageRequest.of(page.page - 1, page.size, sort)
+        val pageable: Pageable = PageRequest.of(page.page - 1, page.size, sort)
 
-        var pageUser: Page<User> = when (page.userInfo) {
+        val pageUser: Page<User> = when (page.userInfo) {
             null -> userRepository.findAll(pageable)
             else -> validation.searchStringCheck(page.userInfo, pageable)
         }
 
-        if (pageUser.isEmpty) {
-            throw CustomException(ErrorCode.NOT_FOUN_USER)
-        }
-
-        for (find in pageUser) {
+        for (find in pageUser) { //컬렉션맵
             val userInfo = UserInfoResponseDto(
                 name = find.name,
                 email = find.email,
@@ -65,7 +59,7 @@ class UserService(
                 gender = find.gender
             )
 
-            val product: ProductResponseDto = when (find.orders!!.size) {
+            val product: ProductResponseDto = when (find.orders.size) {
                 0 -> ProductResponseDto(
                     orderNum = null,
                     productName = null,
@@ -74,7 +68,7 @@ class UserService(
                 else -> ProductResponseDto(
                     orderNum = find.product?.productName,
                     productName = find.product?.productName,
-                    orderDate = find.orders?.get(find.orders?.size!! - 1)?.createdAt
+                    orderDate = find.orders.get(find.orders.size - 1).createdAt
                 )
             }
 

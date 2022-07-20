@@ -33,7 +33,7 @@ data class RegisterRequestDto(
     val pwCheck: String,
 
     @field:NotNull
-    val phone: Long,
+    val phone: Long, //string
 
     @field:NotBlank
     @field:Pattern(regexp = """^[a-z]*${'$'}""", message = "영문 소문자만 입력 가능합니다.")

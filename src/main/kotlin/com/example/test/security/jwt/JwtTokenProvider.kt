@@ -17,7 +17,7 @@ class JwtTokenProvider(private val userDetailsService: UserDetailsService) {
     private var secretKey = "testKeyKotlindfsdcestlindfsdsdff2324="
 
     //토큰 유효시간 30분
-    private val tokenValidTime = 30 * 60 * 1000L
+    private val tokenValidTime = 30 * 60 * 1000L //전역변수로 사용 컴페니언 오브젝트 사용
 
     @PostConstruct
     protected fun init() {

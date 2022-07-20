@@ -35,7 +35,7 @@ class UserInfoValidation(
         val findUser: Page<User> = when (user.contains("@")) {
             true -> userRepository.findByEmailContaining(user, pageable)
             else -> userRepository.findByNameContaining(user, pageable)
-        }
+        } //db 조회 할 때 쿼리문을 만들어서 사용
         return findUser
     }
 }

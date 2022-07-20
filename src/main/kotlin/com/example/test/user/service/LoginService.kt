@@ -38,14 +38,14 @@ class LoginService(
             throw CustomException(ErrorCode.FAIL_PASSWORD)
         }
 
-        val user = User(
+        val user = User( //dto 생성자로 만들어서 받아오기
             name = registerDto.name,
             email = registerDto.email,
             pw = passwordEncoder.encode(registerDto.pw),
             phone = registerDto.phone,
             nickName = registerDto.nickName,
             gender = registerDto.gender,
-            orders = null,
+            orders = emptyList(),
             product = null
         )
 

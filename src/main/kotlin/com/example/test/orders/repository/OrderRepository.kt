@@ -16,5 +16,5 @@ import org.springframework.data.jpa.repository.JpaRepository
  * @author Hyunwoong Shim
  */
 interface OrderRepository : JpaRepository<Orders, Long> {
-    fun findByUser(user: User): List<Orders>?
+    fun findByUser(user: User): List<Orders>
 }

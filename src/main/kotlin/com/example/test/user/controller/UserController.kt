@@ -14,11 +14,7 @@ import com.example.test.user.service.UserService
 import io.swagger.annotations.ApiOperation
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 /**
  * @author Hyunwoong Shim
@@ -29,12 +25,13 @@ class UserController(
     private val userService: UserService
 ) {
     @ApiOperation("전체 유저 검색 / 조회")
-    @PostMapping("/user/list")
+    @PostMapping("/user/list") //get, @ModelAttribute
     fun getPage(
         @AuthenticationPrincipal userDetails: UserDetails,
         @RequestBody getPage: PageRequestDto,
         @RequestHeader(value = "authorization") token: String
-    ): ArrayList<MembersInfoResponseDto> {
+    ): ArrayList<MembersInfoResponseDto> { //전체 페이지가 얼마인지 알 수가 없음, 페이지 객체 사용하는게 나음, 토탈엘리먼트,
         return userService.getMemberList(userDetails, getPage)
+        //세션으로 로그인 구현해도 됨
     }
 }

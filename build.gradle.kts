@@ -11,7 +11,7 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("kapt") version kotlinVersion
-    id("org.jetbrains.kotlin.plugin.jpa") version "1.3.61"
+//    id("org.jetbrains.kotlin.plugin.jpa") version "1.3.61"
 }
 
 // change this
@@ -30,14 +30,12 @@ repositories {
 }
 
 dependencies {
-    val querydslVersion = "5.0.0"
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     runtimeOnly("com.h2database:h2")
-    runtimeOnly("mysql:mysql-connector-java")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
     //springSecurity
@@ -52,14 +50,7 @@ dependencies {
 
     //Valid
     implementation("org.springframework.boot:spring-boot-starter-validation")
-
-    /* for activemq */
-    implementation("org.springframework.boot:spring-boot-starter-activemq")
-    implementation("org.apache.activemq:activemq-pool")
-
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("com.querydsl:querydsl-apt:$querydslVersion")
-    implementation("com.querydsl:querydsl-jpa:$querydslVersion")
 
     //swagger
     implementation("io.springfox:springfox-boot-starter:3.0.0")
